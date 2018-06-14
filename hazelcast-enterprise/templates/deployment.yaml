@@ -48,6 +48,8 @@ spec:
         volumeMounts:
         - name: hazelcast-storage
           mountPath: /data/hazelcast
+        - name: hazelcast-persistent
+          mountPath: /data/persistent
         env:
         - name: HZ_DATA
           value: /data/hazelcast
@@ -59,3 +61,10 @@ spec:
       - name: hazelcast-storage
         configMap:
           name: hazelcast-configuration
+      - name: hazelcast-persistent
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "hazelcast.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

@@ -30,6 +30,8 @@ hazelcast:
   javaOpts:
   # licenseKey is the Hazelcast Enterprise License Key that is required to run the node
   licenseKey:
+  hotRestart:
+    enabled: true
   # configurationFiles are Hazelcast configuration files    
   configurationFiles:
     hazelcast.xml: |-
@@ -53,6 +55,12 @@ hazelcast:
         </network>
       </hazelcast>
 
+persistence:
+  enabled: true
+  # existingClaim: true
+  accessModes:
+  - ReadWriteOnce
+  size: 8Gi
 
 # nodeSelector is an array of Hazelcast Node labels for POD assignments
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
