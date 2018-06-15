@@ -31,39 +31,34 @@ hazelcast:
   # licenseKey is the Hazelcast Enterprise License Key that is required to run the node
   licenseKey:
   hotRestart:
-    enabled: false
-  # configurationFiles are Hazelcast configuration files    
-  configurationFiles:
-    hazelcast.xml: |-
-      <?xml version="1.0" encoding="UTF-8"?>
-      <hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.10.xsd"
-                     xmlns="http://www.hazelcast.com/schema/config"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    # enabled decides whether the Hot Restart feature is enabled
+    enabled: true
+    # parallelism is the level of parallelism in Hot Restart Persistence (number of I/O threads)
+    parallelism: 1
+    # validationTimeoutSeconds is the timeout for the Hot Restart process when validating the cluster members and partitioning tables
+    validationTimeoutSeconds: 120
+    # dataLoadTimeoutSeconds is is the data load timeout for the Hot Restart process
+    dataLoadTimeoutSeconds: 900
+    # clusterDataRecoveryPolicy is the recovery policy: FULL_RECOVERY_ONLY, PARTIAL_RECOVERY_MOST_RECENT, or PARTIAL_RECOVERY_MOST_COMPLETE
+    clusterDataRecoveryPolicy: FULL_RECOVERY_ONLY
+    # maps is a list of maps for which the Hot Restart process is enabled
+    maps:
+      # name is the name of the map
+      - name: test-map
+      # fsync guarantees that data is persisted to the disk device when a write operation returns successful response to the caller
+        fsync: true
+    # caches is a list of caches for which the Hot Restart process is enabled
+    caches:
+      # name is the name of the cache
+      # - name: test-cache
+      # fsync guarantees that data is persisted to the disk device when a write operation returns successful response to the caller
+      # fsync: false
 
-        <properties>
-          <property name="hazelcast.discovery.enabled">true</property>
-        </properties>
-        <network>
-          <join>
-            <multicast enabled="false"/>
-            <tcp-ip enabled="false" />
-            <discovery-strategies>
-              <discovery-strategy enabled="true" class="com.hazelcast.kubernetes.HazelcastKubernetesDiscoveryStrategy">
-              </discovery-strategy>
-            </discovery-strategies>
-          </join>
-        </network>
-        <hot-restart-persistence enabled="{{ hazelcast.hotRestart.enabled }}">
-            <base-dir>/data/persistent/${podName}</base-dir>
-            <validation-timeout-seconds>120</validation-timeout-seconds>
-            <data-load-timeout-seconds>900</data-load-timeout-seconds>
-        </hot-restart-persistence>
-        <map name="test-map">
-            <hot-restart enabled="true">
-              <fsync>true</fsync>
-            </hot-restart>
-        </map>
-      </hazelcast>
+
+
+  # configurationFiles are Hazelcast configuration files    
+  # configurationFiles:
+  #   hazelcast.xml: |-
 
 persistence:
   enabled: true
