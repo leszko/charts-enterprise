@@ -31,7 +31,7 @@ hazelcast:
   # licenseKey is the Hazelcast Enterprise License Key that is required to run the node
   licenseKey:
   hotRestart:
-    enabled: true
+    enabled: false
   # configurationFiles are Hazelcast configuration files    
   configurationFiles:
     hazelcast.xml: |-
@@ -53,6 +53,16 @@ hazelcast:
             </discovery-strategies>
           </join>
         </network>
+        <hot-restart-persistence enabled="{{ hazelcast.hotRestart.enabled }}">
+            <base-dir>/data/persistent/${podName}</base-dir>
+            <validation-timeout-seconds>120</validation-timeout-seconds>
+            <data-load-timeout-seconds>900</data-load-timeout-seconds>
+        </hot-restart-persistence>
+        <map name="test-map">
+            <hot-restart enabled="true">
+              <fsync>true</fsync>
+            </hot-restart>
+        </map>
       </hazelcast>
 
 persistence:
@@ -76,6 +86,21 @@ livenessProbe:
   periodSeconds: 10
   # timeoutSeconds decides when the probe times out
   timeoutSeconds: 5
+  # successThreshold is the minimum consecutive successes for the probe to be considered successful after having failed
+  successThreshold: 1
+  # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
+  failureThreshold: 3
+
+# Hazelcast Readiness probe
+readinessProbe:
+  # enabled is a flag to used to enable readiness probe
+  enabled: true
+  # initialDelaySeconds is a delay before readiness probe is initiated
+  initialDelaySeconds: 30
+  # periodSeconds decides how often to perform the probe
+  periodSeconds: 10
+  # timeoutSeconds decides when the probe times out
+  timeoutSeconds: 1
   # successThreshold is the minimum consecutive successes for the probe to be considered successful after having failed
   successThreshold: 1
   # failureThreshold is the minimum consecutive failures for the probe to be considered failed after having succeeded
