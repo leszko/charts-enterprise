@@ -53,7 +53,7 @@ hazelcast:
             </discovery-strategies>
           </join>
         </network>
-        <hot-restart-persistence enabled="false">
+        <hot-restart-persistence enabled="true">
             <base-dir>/data/persistent/${podName}</base-dir>
             <validation-timeout-seconds>1200</validation-timeout-seconds>
             <data-load-timeout-seconds>900</data-load-timeout-seconds>
